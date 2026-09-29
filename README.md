@@ -59,24 +59,24 @@
 
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Searches the items in `listings.json` for listings matching the user's requested description, size, and maximum price.
+- **Inputs:** `description` (string), `size` (string), `max_price` (float).
+- **Returns:** A list of matching listing dictionaries containing fields such as `id`, `title`, `description`, `category`, `style_tags`, `size`, `condition`, `price`, `colors`, `brand`, and `platform`.
+- **When it has nothing:** Returns an empty list `[]` when no listings match the search.
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Uses the new listing item and the user's wardrobe to suggest an outfit combination.
+- **Inputs:** `new_item` (dict), `wardrobe` (dict containing a list of item dictionaries).
+- **Returns:** A list of item dictionaries containing the `new_item` and selected compatible items from the user's wardrobe.
+- **When it has nothing:** If the wardrobe contains no items, returns a string containing general outfit advice for styling the new item.
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Writes a short caption describing the appeal of an outfit after the addition of the new item.
+- **Inputs:** `outfit` (list of item dictionaries), `new_item` (dict).
+- **Returns:** A string containing a short caption describing the outfit and how the new item complements it.
+- **When it has nothing:** Returns the string `"Missing outfit or new item"` if either required input is missing.
 
 ---
 
@@ -93,7 +93,7 @@
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
+**Branch rule:** If `search_listings` returns an empty list, put a message in the session and stop. Otherwise, take the first result and continue to `suggest_outfit`.
 
 **Where it lives:** `agent.py::run_agent`
 
