@@ -38,6 +38,7 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:** it should be 5/5 times since search_listings should consistently return an empty list when there are no matching listings, allowing the agent to stop before calling suggest_outfit and return a message naming what the user could change.
+
 <!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
      about this path? -->
 

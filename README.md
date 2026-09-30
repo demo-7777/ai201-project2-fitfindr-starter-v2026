@@ -68,7 +68,7 @@
 
 - **What it does:** Uses the new listing item and the user's wardrobe to suggest an outfit combination.
 - **Inputs:** `new_item` (dict), `wardrobe` (dict containing a list of item dictionaries).
-- **Returns:** A list of item dictionaries containing the `new_item` and selected compatible items from the user's wardrobe.
+- **Returns:** A string containing the `new_item` and selected compatible items from the user's wardrobe.
 - **When it has nothing:** If the wardrobe contains no items, returns a string containing general outfit advice for styling the new item.
 
 ### `create_fit_card`
