@@ -54,7 +54,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session = new_session(query, wardrobe)
 
     iteration_count = 1
-    print(f"Check iteration: {iteration_count}")
+    #print(f"Check iteration: {iteration_count}")
     trace.check_iterations(iteration_count)
 
     # Parse max price
@@ -123,7 +123,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
     # Next iteration
     iteration_count+=1
-    print(f"Checking iteration: {iteration_count}")
+    #print(f"Checking iteration: {iteration_count}")
     trace.check_iterations(iteration_count)
 
     # Pass the selected item through session state
@@ -134,7 +134,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
     # Next iteration
     iteration_count+=1
-    print(f"Checking iteration: {iteration_count}")
+    #print(f"Checking iteration: {iteration_count}")
     trace.check_iterations(iteration_count)
 
     # Create the final fit card using session state
