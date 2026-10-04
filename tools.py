@@ -73,8 +73,10 @@ def search_listings(
                 if keyword in searchable_text:
                     score += 1
 
-            # Ignore listings with no keyword matches
-            if score == 0:
+            # Require stronger relevance for multi-word searches
+            minimum_matches = 2 if len(keywords) >= 2 else 1
+
+            if score < minimum_matches:
                 continue
 
             results.append((score, listing))

@@ -185,6 +185,12 @@ Nothing beats the timeless combo of your favorite white sneakers and the ultimat
 - *What came back:* It produced a loop that parses the query, calls search_listings, stores the selected item in the session, calls suggest_outfit, and then calls create_fit_card. It also included the branch that stops when the search returns an empty list.
 - *What I changed:* I added and tested the iteration checks using trace.check_iterations(). I ran both example paths and verified that the successful path reached all three tools while the no-results path stopped after the search and left fit_card as None.
 
+**Moment 3**
+
+- *What I asked for:* I asked AI to help identify a measurable improvement after reviewing my before evaluation results.
+- *What came back:* It identified that `search_listings` was accepting listings with only one matching keyword and suggested requiring at least two matches for multi-word searches.
+- *What I changed:* I applied the change, ran the after evaluation myself, and verified that all five criteria still passed while the test search decreased from 10 results to 6 more relevant results.
+
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 3.
@@ -340,19 +346,24 @@ One weakness shown by the tests is search relevance. The search can return listi
 **Happy path**
 
 ```
-
+[1] search_listings (via MCP)
+      in: dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in: dict with keys: new_item, wardrobe
+[3] create_fit_card
+      in: dict with keys: outfit, new_item
 ```
 
 **Empty search**
 
 ```
-
+[1] search_listings (via MCP)
+      in: dict with keys: description, size, max_price
+      out: [] (empty)
 ```
 
-**On the MCP move:** <!-- what changed in your code, and whether anything
-behaved differently afterwards. If the rewire didn't work, say exactly where it
-broke — the error text and the last thing that worked. That earns the point in
-full. -->
+**On the MCP move:** I moved `search_listings` from a direct function call to the MCP server. `agent.py` now calls it through `mcp_client.call_tool`. The agent's normal behavior stayed the same after the move, and the trace confirms that `search_listings` runs through MCP before the other two tools. <!-- what changed in your code, and whether anything behaved differently afterwards. If the rewire didn't work, say exactly where it broke — the error text and the last thing that worked. That earns the point in full. -->
 
 
 
@@ -365,21 +376,21 @@ full. -->
 
      `python run_eval.py --label after` -->
 
-**What I changed:**
+**What I changed:** I changed search_listings so multi-word searches require at least two keyword matches instead of accepting a listing when only one keyword matches.
 
-**Which failure it was meant to fix:**
+**Which failure it was meant to fix:** All five criteria passed, but the before run showed weak search relevance. The query vintage graphic tee under $30 returned 10 results, including loosely related listings. The change was meant to reduce those weaker matches.
 
 ### Run Log — After
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes | 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops early | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Selected listing passed to outfit tool | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Fit card stays consistent with item | 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 5. Maximum price respected | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
 
-**Did it help, and how do I know:**
+**Did it help, and how do I know:** Yes. All five criteria continued to meet their targets, while the `vintage graphic tee under $30` search decreased from 10 results before the change to 6 results after the change. The same correct Y2K Baby Tee remained the top selected item, so the change reduced loosely related results without breaking the tested agent behavior.
 
 <!-- If it made things worse, say that. Honestly reported, that earns full
      credit and is more interesting than one that worked. -->
@@ -389,6 +400,10 @@ full. -->
 ---
 
 ## What's Still Broken
+
+All five criteria still meet their targets after the improvement, so there are no remaining failed criteria to fix.
+
+The search is more selective than before, but keyword matching is still simple and may return some loosely related listings. A future improvement could use better relevance scoring, but I stopped here because unit 4 requires only one measured improvement.
 
 <!-- For each criterion still missed: what you'd do, and why you stopped where
      you did. "I ran out of time" is fine if it's true. Pretending nothing is
