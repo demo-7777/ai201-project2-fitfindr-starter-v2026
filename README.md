@@ -214,8 +214,6 @@ Nothing beats the timeless combo of your favorite white sneakers and the ultimat
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
-```
-
 **Criterion 1 — Matching query completes all three tools**  
 Tested: `agent.py::run_agent`
 
@@ -277,7 +275,6 @@ Query: vintage graphic tee under $20
 selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
 search_results: 8
 ```
-```
 
 ---
 
@@ -299,16 +296,20 @@ search_results: 8
      Look for a pattern. Three misses on the same tool is one problem, not
      three. -->
 
+
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Matching query completes | 4/5 | MET (5/5) | All five tries completed all three tool calls and returned a fit card. |
+| 2 | Impossible query stops early | 5/5 | MET (5/5) | All five tries stopped after the empty search and returned a useful message. |
+| 3 | Selected listing passed to outfit tool | 5/5 | MET (5/5) | All five tries passed the selected listing into `suggest_outfit`. |
+| 4 | Fit card stays consistent with item | 4/5 | MET (5/5) | All five fit cards stayed consistent with the selected item's fields. |
+| 5 | Maximum price respected | 5/5 | MET (5/5) | All five tries selected an item at or below the requested maximum price. |
 
 **Diagnoses**
 
+All five criteria met their original targets, so there were no failed criteria requiring a failure diagnosis. The 5/5 targets were appropriate for deterministic behavior. The 4/5 targets were reasonable for criteria involving model-generated output because the wording can vary between runs.
+
+One weakness shown by the tests is search relevance. The search can return listings that only loosely match the full description. I will use this as the basis for the one improvement in the next milestone.
 
 
 ---
