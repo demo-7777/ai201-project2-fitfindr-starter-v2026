@@ -254,6 +254,17 @@ that produced it:
 
 ## Loop Trace
 
+```text
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: **Outfit Suggestion:**  * **Top:** Y2K Baby Tee — Butterfly Print (New Item) * **Bottoms:** Baggy straight-leg…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Channeling major 2000s energy with this fitted butterfly baby tee paired with dark baggy denim and chunky snea…
+```
 <!-- One full run, printed step by step, with the MCP call visible in it.
 
      `python app.py ask '...' --trace` once you've added the trace.step()

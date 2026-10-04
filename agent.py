@@ -55,6 +55,9 @@ def new_session(query: str, wardrobe: dict) -> dict:
 # ── planning loop ─────────────────────────────────────────────────────────────
 
 def run_agent(query: str, wardrobe: dict) -> dict:
+    
+    trace.start_trace()
+    
     session = new_session(query, wardrobe)
 
     iteration_count = 1
@@ -113,6 +116,11 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         "size": session["parsed"]["size"],
         "max_price": session["parsed"]["max_price"],
     })
+    trace.step(
+        "search_listings (via MCP)",
+        inputs=session["parsed"],
+        returned=session["search_results"],
+    )
 
     # Required branch: stop if search returned nothing
     if not session["search_results"]:
@@ -130,22 +138,41 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     #print(f"Checking iteration: {iteration_count}")
     trace.check_iterations(iteration_count)
 
-    # Pass the selected item through session state
-    session["outfit_suggestion"] = suggest_outfit(
-        session["selected_item"],
-        session["wardrobe"],
-    )
+    try:
+        session["outfit_suggestion"] = suggest_outfit(
+            session["selected_item"],
+            session["wardrobe"],
+        )
+        trace.step(
+            "suggest_outfit",
+            inputs={
+                "new_item": session["selected_item"],
+                "wardrobe": session["wardrobe"],
+            },
+            returned=session["outfit_suggestion"],
+        )
 
-    # Next iteration
-    iteration_count+=1
-    #print(f"Checking iteration: {iteration_count}")
-    trace.check_iterations(iteration_count)
+        iteration_count += 1
+        trace.check_iterations(iteration_count)
 
-    # Create the final fit card using session state
-    session["fit_card"] = create_fit_card(
-        session["outfit_suggestion"],
-        session["selected_item"],
-    )
+        session["fit_card"] = create_fit_card(
+            session["outfit_suggestion"],
+            session["selected_item"],
+        )
+        trace.step(
+            "create_fit_card",
+            inputs={
+                "outfit": session["outfit_suggestion"],
+                "new_item": session["selected_item"],
+            },
+            returned=session["fit_card"],
+        )
+
+    except ModelUnavailable:
+        session["error"] = (
+            "The model couldn't be reached. Check your API key or internet "
+            "connection, then try again."
+        )
 
     return session
 
