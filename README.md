@@ -205,17 +205,78 @@ Nothing beats the timeless combo of your favorite white sneakers and the ultimat
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes | 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops early | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Selected listing passed to outfit tool | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Fit card stays consistent with item | 4/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 5. Maximum price respected | 5/5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
 ```
 
+**Criterion 1 — Matching query completes all three tools**  
+Tested: `agent.py::run_agent`
+
+```text
+selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+search_results: 10
+
+[1] search_listings (via MCP)
+[2] suggest_outfit
+[3] create_fit_card
+
+Fit card:
+Channeling major early 2000s energy with this effortless streetwear fit, pairing baggy dark wash denim with chunky kicks. The star of the look is this brand new Y2K butterfly baby tee, which is giving all the nostalgic vibes. Snag this cute new piece on Depop for just $18.00 before it’s gone!
+```
+
+**Criterion 2 — Impossible query stops early**  
+Tested: `agent.py::run_agent`
+
+```text
+stopped early: yes — No matching listings were found. Try changing the description, size, or increasing the maximum price.
+selected_item: (none)
+search_results: 0
+
+[1] search_listings (via MCP)
+      out: [] (empty)
+```
+
+**Criterion 3 — Selected listing passed to outfit tool**  
+Tested: `agent.py::run_agent`
+
+```text
+selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+
+[1] search_listings (via MCP)
+      out: 10 items: Y2K Baby Tee — Butterfly Print, ...
+
+[2] suggest_outfit
+      in: dict with keys: new_item, wardrobe
+
+Outfit Suggestion:
+Top: Y2K Baby Tee — Butterfly Print (New item)
+```
+
+**Criterion 4 — Fit card stays consistent with item**  
+Tested: `tools.py::create_fit_card`
+
+```text
+selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+
+Fit card:
+Embracing full early-2000s streetwear energy with this baggy denim and cropped hoodie combo. The star of the fit is this new Y2K butterfly print baby tee, which brings total retro nostalgia. Grab it on my depop now for just $18.00 before it’s gone!
+```
+
+**Criterion 5 — Maximum price respected**  
+Tested: `tools.py::search_listings`
+
+```text
+Query: vintage graphic tee under $20
+selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+search_results: 8
+```
 ```
 
 ---
